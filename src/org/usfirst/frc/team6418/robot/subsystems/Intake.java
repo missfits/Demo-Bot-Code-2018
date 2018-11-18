@@ -12,6 +12,7 @@ public class Intake extends Subsystem {
 	private VictorSP intakeRight = new VictorSP(0);
 	private VictorSP intakeLeft = new VictorSP(1);
 	private DoubleSolenoid intakeSolenoid = new DoubleSolenoid(2, 3);
+	private DoubleSolenoid intakeTiltSolenoid = new DoubleSolenoid(4, 5);
 	
     public Intake() {
     	intakeLeft.setInverted(true);
@@ -40,6 +41,14 @@ public class Intake extends Subsystem {
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
+    }
+    
+    public void tiltUp() {
+    	intakeTiltSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+    
+    public void tiltDown() {
+    	intakeTiltSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 }
 

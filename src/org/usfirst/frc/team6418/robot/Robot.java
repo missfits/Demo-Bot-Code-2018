@@ -7,13 +7,22 @@
 
 package org.usfirst.frc.team6418.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc.team6418.robot.commands.DriveStraight;
+import org.usfirst.frc.team6418.robot.commands.*;
 import org.usfirst.frc.team6418.robot.subsystems.*;
+
+enum StartingPosition {
+	LEFT, MIDDLE, RIGHT
+}
+
+enum AutoStrategy {
+	STRAIGHT, SWITCH, SCALE, NOTHING
+}
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,9 +35,36 @@ public class Robot extends TimedRobot {
 	public static DriveTrain driveTrain = new DriveTrain();
 	public static Intake intake = new Intake();
 	public static OI oi;
+	
+	public static int switchLeft() {
+		String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		if (gameData.length() > 0) {
+			if (gameData.charAt(0) == 'L') {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		return -1;
+	}
+	
+	public static int scaleLeft() {
+		String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		if (gameData.length() > 0) {
+			if (gameData.charAt(1) == 'L') {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		return -1;
+	}
 
 	Command autonomousCommand;
-	SendableChooser<Command> autoChooser = new SendableChooser<>();
+	SendableChooser<AutoStrategy> autoStrategy = new SendableChooser<>();
+	SendableChooser<StartingPosition> startPosition = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -37,9 +73,16 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		oi = new OI();
-		autoChooser.addDefault("Default Auto", new DriveStraight(0.3,85));
-		//chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", autoChooser);
+		autoStrategy.addObject("Only Straight", AutoStrategy.STRAIGHT);
+		autoStrategy.addObject("Switch", AutoStrategy.SWITCH);
+		autoStrategy.addDefault("Fancy Scale", AutoStrategy.SCALE);
+		autoStrategy.addObject("Do Nothing", AutoStrategy.NOTHING);
+		SmartDashboard.putData("Auto Strategy", autoStrategy);
+		
+		startPosition.addDefault("Left", StartingPosition.LEFT);
+		startPosition.addObject("Middle", StartingPosition.MIDDLE);
+		startPosition.addObject("Right", StartingPosition.RIGHT);
+		SmartDashboard.putData("Starting Position", startPosition);
 	}
 
 	/**
@@ -70,8 +113,33 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = autoChooser.getSelected();
-
+		autonomousCommand = null;
+		if (autoStrategy.getSelected() == AutoStrategy.SWITCH) {
+			if ((Robot.switchLeft() == 1 && startPosition.getSelected() == StartingPosition.LEFT)
+					|| (Robot.switchLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
+				autonomousCommand = new SideSwitch();
+			} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
+				autonomousCommand = new MiddleSwitch();
+			} else {
+				autonomousCommand = new DriveStraight(0.3,85);
+			}
+		} else if (autoStrategy.getSelected() == AutoStrategy.SCALE) {
+			if ((Robot.scaleLeft()== 1 && startPosition.getSelected() == StartingPosition.LEFT)
+					|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
+				//TODO scale auto true
+			} else if ((Robot.scaleLeft() == 1 && startPosition.getSelected() == StartingPosition.RIGHT)
+					|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.LEFT)) {
+				//TODO scale auto false
+			} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
+				autonomousCommand = new MiddleSwitch();
+			} else {
+				autonomousCommand = new DriveStraight(0.3,85);
+			}
+		} else if (autoStrategy.getSelected() == AutoStrategy.STRAIGHT) {
+			autonomousCommand = new DriveStraight(0.3,85);
+		} else {
+			autonomousCommand = new Pause(15.0);
+		}
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -109,6 +177,9 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		SmartDashboard.putData(Scheduler.getInstance());
+		SmartDashboard.putData(driveTrain);
+		SmartDashboard.putData(intake);
 		Scheduler.getInstance().run();
 	}
 

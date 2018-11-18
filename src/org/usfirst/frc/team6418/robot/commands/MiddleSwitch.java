@@ -1,28 +1,35 @@
 package org.usfirst.frc.team6418.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-
+import org.usfirst.frc.team6418.robot.Robot;
 /**
  *
  */
 public class MiddleSwitch extends CommandGroup {
-
+	double angle1, angle2;
+	double turntDistance, distanceAfterTurn2;
+	
     public MiddleSwitch() {
-        // Add Commands here:
-        // e.g. addSequential(new Command1());
-        //      addSequential(new Command2());
-        // these will run in order.
-
-        // To run multiple commands at the same time,
-        // use addParallel()
-        // e.g. addParallel(new Command1());
-        //      addSequential(new Command2());
-        // Command1 and Command2 will run in parallel.
-
-        // A command group will require all of the subsystems that each member
-        // would require.
-        // e.g. if Command1 requires chassis, and Command2 requires arm,
-        // a CommandGroup containing them would require both the chassis and the
-        // arm.
+    	if (Robot.switchLeft() == -1)
+    		return;
+    	else if (Robot.switchLeft() == 1) {
+    		angle1 = -34.5;
+    		angle2 = 36;
+    		turntDistance = 72;
+    		distanceAfterTurn2 = 13;
+    	} else if (Robot.switchLeft() == 0) {
+    		angle1 = 35;
+    		angle2 = -37;
+    		turntDistance = 70;
+    		distanceAfterTurn2 = 13;
+    	}
+    	addSequential(new DriveStraight(0.5,6));
+    	addSequential(new Turn(angle1));
+    	addSequential(new Pause(0.5));
+    	addSequential(new DriveStraight(0.5,turntDistance));
+    	addSequential(new Turn(angle2));
+    	addSequential(new DriveStraight(0.5,distanceAfterTurn2));
+    	addSequential(new ShootCube());
+    	addSequential(new DriveStraight(-0.5,6));
     }
 }

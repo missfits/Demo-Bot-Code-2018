@@ -15,11 +15,11 @@ import org.usfirst.frc.team6418.robot.Robot;
  */
 public class DriveStraight extends Command {
 	private double speed, distance,encoderOffSet;
-	public DriveStraight(double s, double d) {
+	public DriveStraight(double speed, double inches) {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveTrain);
-		speed = s;
-		distance = d;
+		this.speed = speed;
+		distance = inches;
 	}
 	// Called just before this Command runs the first time
 	@Override

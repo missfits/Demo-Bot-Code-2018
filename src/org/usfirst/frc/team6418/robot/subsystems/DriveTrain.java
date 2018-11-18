@@ -13,7 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.command.Subsystem;
-
+import org.usfirst.frc.team6418.robot.commands.Teleop;
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
@@ -30,8 +30,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		// setDefaultCommand(new MySpecialCommand());
+		setDefaultCommand(new Teleop());
 	}
 	public void drive(double speed) {
 		frontLeft.set(ControlMode.PercentOutput, speed);
@@ -57,5 +56,19 @@ public class DriveTrain extends Subsystem {
 		rearLeft.set(ControlMode.PercentOutput, -speed);
 		rearRight.set(ControlMode.PercentOutput, speed);
 		frontRight.set(ControlMode.PercentOutput, speed);
+	}
+	public void strafe(double speed) {
+		frontLeft.set(ControlMode.PercentOutput, speed);
+		rearLeft.set(ControlMode.PercentOutput, -speed);
+		rearRight.set(ControlMode.PercentOutput, speed);
+		frontRight.set(ControlMode.PercentOutput, -speed);
+	}
+	
+	public void tankDrive(double lSpeed, double rSpeed) {
+//		System.out.println("tank L: " + lSpeed + " R: " + rSpeed);
+		frontLeft.set(ControlMode.PercentOutput, lSpeed);
+		rearLeft.set(ControlMode.PercentOutput, lSpeed);
+		frontRight.set(ControlMode.PercentOutput, rSpeed);
+		rearRight.set(ControlMode.PercentOutput, rSpeed);
 	}
 }
