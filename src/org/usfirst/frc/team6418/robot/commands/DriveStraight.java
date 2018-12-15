@@ -8,6 +8,8 @@
 package org.usfirst.frc.team6418.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.usfirst.frc.team6418.robot.Robot;
 
 /**
@@ -20,6 +22,7 @@ public class DriveStraight extends Command {
 		requires(Robot.driveTrain);
 		this.speed = speed;
 		distance = inches;
+		SmartDashboard.putNumber("Goal Distance: ", (distance/ 18.85) * 4096);
 	}
 	// Called just before this Command runs the first time
 	@Override
@@ -31,6 +34,7 @@ public class DriveStraight extends Command {
 	@Override
 	protected void execute() {
 		Robot.driveTrain.drive(speed);
+		SmartDashboard.putNumber("Encoder distance: ", Math.abs(Robot.driveTrain.getEncoderPosition() - encoderOffSet));
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

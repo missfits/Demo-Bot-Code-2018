@@ -33,9 +33,7 @@ public class OI {
 	// number it is.
 	// Joystick stick = new Joystick(port);
 	// Button button = new JoystickButton(stick, buttonNumber);
-	Joystick rightStick = new Joystick(0);
-	Joystick leftStick = new Joystick(1);
-	Joystick xBox = new Joystick(2);
+	Joystick xBox = new Joystick(0);
 	
 	public Button aButton = new JoystickButton(xBox,1);
 	public Button bButton = new JoystickButton(xBox,2);
