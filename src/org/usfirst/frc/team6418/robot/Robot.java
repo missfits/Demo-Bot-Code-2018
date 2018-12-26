@@ -114,43 +114,31 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		autonomousCommand = null;
-		switch (autoStrategy.getSelected()) {
-			case SWITCH:
-				if ((Robot.switchLeft() == 1 && startPosition.getSelected() == StartingPosition.LEFT)
-						|| (Robot.switchLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
-					// If robot is on side AND on the same side as switch, do side switch
-					autonomousCommand = new SideSwitch();
-				} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
-					// If robot is in the middle, do middle switch
-					autonomousCommand = new MiddleSwitch();
-				} else {
-					// Otherwise, drive straight
-					autonomousCommand = new DriveStraight(0.3,85);
-				}
-				break;
-			case SCALE:
-				if ((Robot.scaleLeft() == 1 && startPosition.getSelected() == StartingPosition.LEFT)
-						|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
-					// If robot is on same side as scale, do same-side scale
-					// TODO: scale auto true
-				} else if ((Robot.scaleLeft() == 1 && startPosition.getSelected() == StartingPosition.RIGHT)
-						|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.LEFT)) {
-					// If robot is on opposite side as scale, do opposite-side scale
-					// TODO: scale auto false
-				} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
-					// If robot is in the middle, do middle switch
-					autonomousCommand = new MiddleSwitch();
-				} else {
-					// If something goes horribly wrong, drive straight
-					autonomousCommand = new DriveStraight(0.3,85);
-				}
-				break;
-			case STRAIGHT:
-				autonomousCommand = new DriveStraight(0.3, 85);
-				break;
-			default:
-				autonomousCommand = new Pause(15.0);
-				break;
+		if (autoStrategy.getSelected() == AutoStrategy.SWITCH) {
+			if ((Robot.switchLeft() == 1 && startPosition.getSelected() == StartingPosition.LEFT)
+					|| (Robot.switchLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
+				autonomousCommand = new SideSwitch();
+			} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
+				autonomousCommand = new MiddleSwitch();
+			} else {
+				autonomousCommand = new DriveStraight(0.3,85);
+			}
+		} else if (autoStrategy.getSelected() == AutoStrategy.SCALE) {
+			if ((Robot.scaleLeft()== 1 && startPosition.getSelected() == StartingPosition.LEFT)
+					|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
+				//TODO scale auto true
+			} else if ((Robot.scaleLeft() == 1 && startPosition.getSelected() == StartingPosition.RIGHT)
+					|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.LEFT)) {
+				//TODO scale auto false
+			} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
+				autonomousCommand = new MiddleSwitch();
+			} else {
+				autonomousCommand = new DriveStraight(0.3,85);
+			}
+		} else if (autoStrategy.getSelected() == AutoStrategy.STRAIGHT) {
+			autonomousCommand = new DriveStraight(0.3,85);
+		} else {
+			autonomousCommand = new Pause(15.0);
 		}
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",

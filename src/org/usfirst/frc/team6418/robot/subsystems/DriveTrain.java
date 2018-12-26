@@ -33,13 +33,16 @@ public class DriveTrain extends Subsystem {
 		setDefaultCommand(new Teleop());
 	}
 	public void drive(double speed) {
-		tankDrive(speed, speed);
+		frontLeft.set(ControlMode.PercentOutput, speed);
+		rearLeft.set(ControlMode.PercentOutput, speed);
+		frontRight.set(ControlMode.PercentOutput, speed);
+		rearRight.set(ControlMode.PercentOutput, speed);
 	}
 	public void stopDrive() {
 		drive(0);
 	}
 	public double getEncoderPosition() {
-		return rearLeft.getSensorCollection().getPulseWidthPosition();
+		 return rearLeft.getSensorCollection().getPulseWidthPosition();
 	}
 	public double getAngle() {
 		return gyro.getAngle();
@@ -62,6 +65,7 @@ public class DriveTrain extends Subsystem {
 	}
 	
 	public void tankDrive(double lSpeed, double rSpeed) {
+//		System.out.println("tank L: " + lSpeed + " R: " + rSpeed);
 		frontLeft.set(ControlMode.PercentOutput, lSpeed);
 		rearLeft.set(ControlMode.PercentOutput, lSpeed);
 		frontRight.set(ControlMode.PercentOutput, rSpeed);
