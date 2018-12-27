@@ -2,11 +2,11 @@ package org.usfirst.frc.team6418.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team6418.robot.Robot;
+
 /**
- *
+ * Command that opens and closes the intake
  */
 public class IntakeHug extends Command {
-	
 	public enum HugPosition{
 		HUG, UNHUG
 	}
@@ -14,7 +14,7 @@ public class IntakeHug extends Command {
 	private HugPosition pos;
 	
 	public IntakeHug(HugPosition pos) {
-		//requires(Robot.intake);
+		// requires(Robot.intake);
 		this.pos = pos;
 	}
 	
@@ -29,7 +29,7 @@ public class IntakeHug extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	switch(pos) {
+    	switch (pos) {
     		case HUG:
     			Robot.intake.hug();
     			break;

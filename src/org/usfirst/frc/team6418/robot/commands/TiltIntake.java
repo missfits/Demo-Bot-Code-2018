@@ -4,26 +4,31 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team6418.robot.Robot;
 
 /**
- *
+ * Command that tilts the intake up and down
  */
-
 public class TiltIntake extends Command {
-	
 	public enum TiltPosition {
 		DOWN, UP
 	}
 	
 	private TiltPosition pos;
-	
+
+    /**
+     * Constructor; sets class variable to specified position
+     *
+     * @param pos param that specifies position to tilt intake at (either UP or DOWN)
+     */
     public TiltIntake(TiltPosition pos) {
-        //requires(Robot.intake);
+        // requires(Robot.intake);
 		this.pos = pos; 
     }
 
-    // Called just before this Command runs the first time
+    /**
+     * Tilts intake
+     */
     protected void initialize() {
     	System.out.println("tilting");
-    	switch(pos) {
+    	switch (pos) {
     		case UP:
     			Robot.intake.tiltUp();
     			break;
@@ -37,18 +42,26 @@ public class TiltIntake extends Command {
     protected void execute() {
     }
 
-    // Make this return true when this Command no longer needs to run execute()
+    /**
+     * finishes after first execution
+     *
+     * @return true
+     */
     protected boolean isFinished() {
         return true;
     }
 
-    // Called once after isFinished returns true
+    /**
+     * Debug statement
+     * TODO: remove?
+     */
     protected void end() {
     	System.out.println("tilt ended");
     }
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
+    /**
+     * Prints out message if command is interrupted
+     */
     protected void interrupted() {
     	System.out.println("tilt interrupted");
     }

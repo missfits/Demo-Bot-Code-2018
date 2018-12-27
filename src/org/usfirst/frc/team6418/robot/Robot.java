@@ -114,31 +114,46 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		autonomousCommand = null;
-		if (autoStrategy.getSelected() == AutoStrategy.SWITCH) {
-			if ((Robot.switchLeft() == 1 && startPosition.getSelected() == StartingPosition.LEFT)
-					|| (Robot.switchLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
-				autonomousCommand = new SideSwitch();
-			} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
-				autonomousCommand = new MiddleSwitch();
-			} else {
+		switch (autoStrategy.getSelected()) {
+			case SWITCH:
+				if ((Robot.switchLeft() == 1 && startPosition.getSelected() == StartingPosition.LEFT)
+						|| (Robot.switchLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
+					// Does side switch if robot is on same side as switch plate
+					autonomousCommand = new SideSwitch();
+				} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
+					// Does middle switch if robot is in the middle
+					autonomousCommand = new MiddleSwitch();
+				} else {
+					// Drives straight if robot is on side opposite to switch plate
+					autonomousCommand = new DriveStraight(0.3,85);
+				}
+				break;
+			case SCALE:
+				if ((Robot.scaleLeft() == 1 && startPosition.getSelected() == StartingPosition.LEFT)
+						|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
+					// Does same side scale if robot is on same side as scale plate
+					// TODO: scale auto true
+				} else if ((Robot.scaleLeft() == 1 && startPosition.getSelected() == StartingPosition.RIGHT)
+						|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.LEFT)) {
+					// Does opposite side scale if robot is on side opposite to scale plate
+					// TODO: scale auto false
+				} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
+					// Does middle switch if robot is in the middle
+					autonomousCommand = new MiddleSwitch();
+				} else {
+					// Drives straight if something glitches
+					autonomousCommand = new DriveStraight(0.3,85);
+				}
+				break;
+			case STRAIGHT:
+				// Drives straight
 				autonomousCommand = new DriveStraight(0.3,85);
-			}
-		} else if (autoStrategy.getSelected() == AutoStrategy.SCALE) {
-			if ((Robot.scaleLeft()== 1 && startPosition.getSelected() == StartingPosition.LEFT)
-					|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.RIGHT)) {
-				//TODO scale auto true
-			} else if ((Robot.scaleLeft() == 1 && startPosition.getSelected() == StartingPosition.RIGHT)
-					|| (Robot.scaleLeft() == 0 && startPosition.getSelected() == StartingPosition.LEFT)) {
-				//TODO scale auto false
-			} else if (startPosition.getSelected() == StartingPosition.MIDDLE) {
-				autonomousCommand = new MiddleSwitch();
-			} else {
-				autonomousCommand = new DriveStraight(0.3,85);
-			}
-		} else if (autoStrategy.getSelected() == AutoStrategy.STRAIGHT) {
-			autonomousCommand = new DriveStraight(0.3,85);
-		} else {
-			autonomousCommand = new Pause(15.0);
+				break;
+			default:
+				// TODO: change default to drive straight?
+				// Do nothing if something glitches
+				autonomousCommand = new Pause(15.0);
+				break;
 		}
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",

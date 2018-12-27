@@ -4,16 +4,24 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- *
+ * Does nothing for specified amount of time
  */
 public class Pause extends Command {
 	private Timer timer = new Timer();
 	private double time;
+
+    /**
+     * Constructor; sets class variable time to specified time in s
+     *
+     * @param time number of seconds to pause
+     */
     public Pause(double time) {
         this.time = time;
     }
 
-    // Called just before this Command runs the first time
+    /**
+     * Starts timer
+     */
     protected void initialize() {
     	timer.start();
     }
@@ -22,7 +30,11 @@ public class Pause extends Command {
     protected void execute() {
     }
 
-    // Make this return true when this Command no longer needs to run execute()
+    /**
+     * Finishes when timer reaches specified time
+     *
+     * @return boolean of whether or not it is finished
+     */
     protected boolean isFinished() {
         return timer.get() >= time;
     }
