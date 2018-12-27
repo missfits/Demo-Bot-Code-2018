@@ -3,37 +3,54 @@ package org.usfirst.frc.team6418.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team6418.robot.Robot;
+
 /**
- *
+ * Command that spins intake wheels out
  */
 public class ShootCube extends Command {
 	private Timer timer = new Timer();
+
+    /**
+     * Constructor; declares requirements
+     */
     public ShootCube() {
         requires(Robot.intake);
     }
 
-    // Called just before this Command runs the first time
+    /**
+     * Starts timer
+     */
     protected void initialize() {
     	timer.start();
     }
 
-    // Called repeatedly when this Command is scheduled to run
+    /**
+     * Spins wheels
+     * TODO: move to initialize() method?
+     */
     protected void execute() {
     	Robot.intake.runWheels(0.7);
     }
 
-    // Make this return true when this Command no longer needs to run execute()
+    /**
+     * Finishes when timer runs for over 1 second
+     *
+     * @return boolean of whether or not it is finished
+     */
     protected boolean isFinished() {
         return timer.get() > 1.0;
     }
 
-    // Called once after isFinished returns true
+    /**
+     * Stops wheels
+     */
     protected void end() {
     	Robot.intake.stopWheels();
     }
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
+    /**
+     * Will stop wheels if command is interrupted
+     */
     protected void interrupted() {
     	Robot.intake.stopWheels();
     }
